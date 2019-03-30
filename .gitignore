@@ -1,0 +1,9 @@
+config.py
+.Python
+bin
+config.pyc
+database
+include
+lib
+pysqlite2-doc
+venv
