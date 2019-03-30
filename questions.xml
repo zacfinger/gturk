@@ -17,7 +17,7 @@
   <input type='email' name='reported_emotion' placeholder='jamesbond@gmail.com'>
 </div>
 <p><input type='submit' id='submitButton' value='Submit' /></p></form>
-
+<p>We will not store your email address for any longer than it takes for you to respond to us.</p>
 <script language='Javascript'>turkSetAssignmentID();</script>
 
 </body></html>
