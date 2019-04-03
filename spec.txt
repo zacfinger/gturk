@@ -22,10 +22,10 @@ also for each row if status is "Email sent" check the inbox for that mailbox to 
 
 Table schema
 
-.------------.------------.--------.--------.------------.
-| Convertist | Convertist | HIT ID | Status | Turk email |
-| email      | email pw   |        |        |            |
------------------------------------------------------------
+.------------.------------.--------.--------.------------.---------------.
+| Convertist | Convertist | HIT ID | Status | Turk email | assignment ID |
+| email      | email pw   |        |        |            |               |
+--------------------------------------------------------------------------
 
 - - - 
 

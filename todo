@@ -1,0 +1,13 @@
+1. modify application.py to generate an HIT that simply includes one blank input field and requests the turk:
+	write to an email address specified in the title of the HIT (include in body later)
+	include in the subject line of the email a code specified in the title of the HIT (include in body later)
+	wait for an email response from the address that includes a code to be entered in the input field on the XML form
+
+2. modify application.py to log the email address entered by convertist in the sql databse with the following values:
+	convertist_email | convertist_pw | HITID | status | secret code
+
+3. modify get_results.py to first open the inbox specified by convertist_email and check that a message with subject line including the code has been sent if so respond to user with automated email that contains other secret code
+
+4. modify get_results.py to second check HITID and for other secret code to aprove HIT job
+
+may need to store assignment ID as well as HIT id

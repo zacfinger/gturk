@@ -8,3 +8,4 @@ include
 lib
 pysqlite2-doc
 venv
+test2.py

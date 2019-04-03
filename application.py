@@ -18,7 +18,7 @@ mturk = boto3.client('mturk',
    endpoint_url = MTURK_SANDBOX
 )
 
-# create table hits (convertist_email text not null, convertist_email_pw text not null, hit_id text not null, status integer not null, turk_email text not null);
+# create table hits (convertist_email TEXT NOT NULL, convertist_email_pw TEXT NOT NULL, hit_id TEXT NOT NULL, status INTEGER NOT NULL, turk_email TEXT NOT NULL, assignment_id TEXT NOT NULL);
 
 @app.route('/', methods=["GET", "POST"])
 def main():
@@ -47,8 +47,8 @@ def main():
 		#c.execute("INSERT INTO hits VALUES ('test@email.com','mural101','AA31337',0,'turk@gmail.com')")
 		
 		# Do this instead
-		t = (convertist_email,convertist_email_pw,new_hit['HIT']['HITId'],0,'')
-		c.execute("INSERT INTO hits VALUES (?,?,?,?,?)", t)
+		t = (convertist_email,convertist_email_pw,new_hit['HIT']['HITId'],0,'','')
+		c.execute("INSERT INTO hits VALUES (?,?,?,?,?,?)", t)
 
 		conn.commit()
 		#print(c.fetchone())
