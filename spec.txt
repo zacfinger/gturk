@@ -1,31 +1,9 @@
-March 27
-
-- - -
-
-create web form that stores email and password in sqlite db if it does not already exist
-
-when application receives email/password it creates a HIT in Mturk
-
-- - -
-
-March 29
-
-Separate application
-
-Open up database and for each row if status is "HIT ID created" check HIT ID if a value has been returned (an email address)
-
-If a value has been returned set status to "Email sent" send a generative email using the address specified in database
-
-also for each row if status is "Email sent" check the inbox for that mailbox to see if user has sent email, if so set HIT ID to accepted
-
-- - -
-
 Table schema
 
-.------------.------------.--------.--------.------------.---------------.
-| Convertist | Convertist | HIT ID | Status | Turk email | assignment ID |
-| email      | email pw   |        |        |            |               |
---------------------------------------------------------------------------
+.------------.------------.--------.--------.-------------.---------------.
+| Convertist | Convertist | HIT ID | Status | Unique code | assignment ID | last_email_checked 
+| email      | email pw   |        |        |             |               |
+---------------------------------------------------------------------------
 
 - - - 
 
