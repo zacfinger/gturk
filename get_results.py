@@ -22,6 +22,7 @@
 # https://blog.mturk.com/tutorial-a-beginners-guide-to-crowdsourcing-ml-training-data-with-python-and-mturk-d8df4bdf2977
 # https://stackoverflow.com/questions/16856647/sqlite3-programmingerror-incorrect-number-of-bindings-supplied-the-current-sta
 # https://codehandbook.org/how-to-read-email-from-gmail-using-python/
+# https://stackoverflow.com/questions/4467230/why-does-c-execute-break-the-loop
 
 import xmltodict
 import boto3
@@ -48,9 +49,10 @@ def newCode(input_string):
 
 conn = sqlite3.connect(dir_path + '/database')
 c = conn.cursor()
-#c.execute('SELECT * FROM hits')
+c.execute('SELECT * FROM hits')
+result = c.fetchall()
 
-for row in c.execute('SELECT * FROM hits'):
+for row in result:
 	me = row[0]
 	my_password = row[1]
 	print me
@@ -139,7 +141,6 @@ for row in c.execute('SELECT * FROM hits'):
 									# set status on db to 1 and save code_2 in db
 									c.execute("UPDATE hits SET status=1, unique_code_2=?, last_email_checked=? WHERE unique_code_1=?", (new_code,i,word))
 									#convertist_email, convertist_email_pw, hit_id, status, unique_code_1, unique_code_2, assignment_id, last_email_checked
-									conn.commit()
 									email_sent = 1
 									break
 
@@ -152,10 +153,12 @@ for row in c.execute('SELECT * FROM hits'):
 
 			if email_sent == 0:
 				c.execute("UPDATE hits SET last_email_checked=? WHERE unique_code_1=?", (latest_email_id,row[4]))
-				conn.commit()
 
 		except Exception, e:
 			print str(e)
+	print "this if statement"
+	print row[3]
+	raw_input()
 	# if status is 1 (meaning we have sent back email to user)
 	if row[3] == 1:
 		print "status is 1"
@@ -173,11 +176,12 @@ for row in c.execute('SELECT * FROM hits'):
 					# if code_2 cipher code_1 works mark assignment as complete and delete from db
 					mturk.approve_assignment(AssignmentId=assignment_id)
 					c.execute("DELETE from hits WHERE unique_code_2=?", (turk_response,))
-					conn.commit()
 				else:
 					mturk.reject_assignment(AssignmentId=assignment_id,RequesterFeedback="Incorrect code provided")
 					c.execute("DELETE from hits WHERE unique_code_1=?", (row[4],))
 		else:
 			print "no responses currently"
-
+conn.commit()
+c.close()
+conn.close()
 print "finished"
