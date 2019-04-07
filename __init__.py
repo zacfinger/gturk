@@ -4,6 +4,8 @@ import sqlite3
 import boto3
 import config
 import random, string
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 app = Flask(__name__)
 
@@ -33,7 +35,7 @@ def main():
 		convertist_email = request.form.get("convertist_email")
 		convertist_email_pw = request.form.get("convertist_email_pw")
 
-		question = open(name='questions.xml',mode='r').read()
+		question = open(name=dir_path+'/questions.xml',mode='r').read()
 
 		new_hit = mturk.create_hit(
 		    Title = 'Write an email to ' + convertist_email + ' and include the code ' + random_code + ' in the subject line',
@@ -48,7 +50,7 @@ def main():
 		)
 		
 		# Insert a row of data
-		conn = sqlite3.connect('database')
+		conn = sqlite3.connect(dir_path+'/database')
 		c = conn.cursor()
 		t = (convertist_email,convertist_email_pw,new_hit['HIT']['HITId'],0,random_code,'','',0)
 		#convertist_email , convertist_email_pw, hit_id, status, unique_code_1, unique_code_2, assignment_id, last_email_checked

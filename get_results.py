@@ -33,6 +33,8 @@ import imaplib
 import email
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 mturk = boto3.client('mturk',
    aws_access_key_id = config.aws_access_key_id,
@@ -44,7 +46,7 @@ mturk = boto3.client('mturk',
 def newCode(input_string):
 	return input_string
 
-conn = sqlite3.connect('database')
+conn = sqlite3.connect(dir_path + '/database')
 c = conn.cursor()
 #c.execute('SELECT * FROM hits')
 
