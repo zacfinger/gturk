@@ -1,3 +1,4 @@
+# http://www.islandtechph.com/2017/10/21/how-to-deploy-a-flask-python-2-7-application-on-a-live-ubuntu-16-04-linux-server-running-apache2/
 from flask import Flask, render_template, request
 import sqlite3
 import boto3
@@ -6,7 +7,8 @@ import random, string
 
 app = Flask(__name__)
 
-MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+#MTURK_SANDBOX = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+MTURK_SANDBOX = 'https://mturk-requester.us-east-1.amazonaws.com'
 
 mturk = boto3.client('mturk',
    aws_access_key_id = config.aws_access_key_id,

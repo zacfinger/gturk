@@ -1,4 +1,5 @@
 # https://realpython.com/python-send-email/#option-1-setting-up-a-gmail-account-for-development
+# https://goo.gl/ZaOP3
 # https://stackoverflow.com/questions/53943240/how-to-solve-attributeerror-smtp-ssl-instance-has-no-attribute-exit-in-py
 # https://stackoverflow.com/questions/17759860/python-2-smtpserverdisconnected-connection-unexpectedly-closed
 

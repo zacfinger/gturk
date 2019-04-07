@@ -3,11 +3,20 @@
 # 1024 times better than Mturk
 # (C)2019 Zacfinger.com
 
+# 2 steps for each Google account before it can be used:
+# enable less secure apps and
+# https://goo.gl/ZaOP3
+
 # TODO
 # if no turk has responded to the HIT 
 # fix async events when SQLite db updated
 # search in body rather than subject line
+# https://stackoverflow.com/questions/25413301/gmail-login-failure-using-python-and-imaplib
 
+# Deploy
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html#create-a-key-pair
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html
+# https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu
 
 # Following resources were helpful
 # https://blog.mturk.com/tutorial-a-beginners-guide-to-crowdsourcing-ml-training-data-with-python-and-mturk-d8df4bdf2977
@@ -42,6 +51,7 @@ c = conn.cursor()
 for row in c.execute('SELECT * FROM hits'):
 	me = row[0]
 	my_password = row[1]
+	print me
 
 	# if status is 0
 		# open inbox of convertist_email to see if someone sent message with code in subject line
@@ -62,6 +72,7 @@ for row in c.execute('SELECT * FROM hits'):
 		SMTP_SERVER = "imap.gmail.com"
 		print "got into this block"
 		try:
+
 			mail = imaplib.IMAP4_SSL(SMTP_SERVER)
 			mail.login(me,my_password)
 			mail.select('[Gmail]/All Mail')
@@ -88,6 +99,7 @@ for row in c.execute('SELECT * FROM hits'):
 						if isinstance(response_part, tuple) and email_sent == 0:
 							msg = email.message_from_string(response_part[1])
 							email_subject = msg['subject']
+							print email_subject
 							if email_subject is not None:
 								words = email_subject.split(" ")
 
@@ -130,8 +142,10 @@ for row in c.execute('SELECT * FROM hits'):
 									break
 
 						else:
+							print "this break"
 							break
 				else:
+					print "this other break"
 					break
 
 			if email_sent == 0:

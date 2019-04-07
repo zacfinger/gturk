@@ -12,7 +12,7 @@
 <form name='mturk_form' method='post' id='mturk_form' action='https://www.mturk.com/mturk/externalSubmit'><input type='hidden' value='' name='assignmentId' id='assignmentId'/>
 
 <p>Please write an email to the address specified in the spec, and include the CODE above somewhere in the subect line (hit DETAILS above to see the address and the code again). Please include other words in the subject line but please do not include any special characters in your subject line, or emojis.</p>
-<p>In the body of the email write a short 100 word paragraph that is convincingly written by a human.</p>
+<p>In the body of the email write a short 100 word paragraph that is convincingly written by a human. Please refer to Google for numerous sites that count the amount of words in a paragraph.</p>
 <p>You will RECEIVE a response from the address within ten minutes that will contain your CONFIRMATION CODE in the SUBJECT LINE.</p>
 <p>For the job to be approved, please provide the CONFIRMATION CODE in the input field below.</p>
 
@@ -22,7 +22,7 @@
   <input type='text' name='reported_emotion' placeholder='Confirmation code'>
 </div>
 <p><input type='submit' id='submitButton' value='Submit' /></p></form>
-<p>We will ever not store or use your email address.</p>
+<p>We will not ever store or use your email address.</p>
 <script language='Javascript'>turkSetAssignmentID();</script>
 
 </body></html>
