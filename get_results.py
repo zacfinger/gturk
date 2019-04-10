@@ -34,6 +34,7 @@ import imaplib
 import email
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import decode
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -44,8 +45,8 @@ mturk = boto3.client('mturk',
    endpoint_url = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
 )
 
-def newCode(input_string):
-	return input_string
+def newCode(input_string,key):
+	return decode.getTranslatedMessage('d',input_string,key)
 
 conn = sqlite3.connect(dir_path + '/database')
 c = conn.cursor()
@@ -53,9 +54,13 @@ c.execute('SELECT * FROM hits')
 result = c.fetchall()
 
 for row in result:
+
 	me = row[0]
 	my_password = row[1]
 	print me
+
+	new_code = newCode(row[4],row[5])
+	print new_code
 
 	# if status is 0
 		# open inbox of convertist_email to see if someone sent message with code in subject line
@@ -70,13 +75,14 @@ for row in result:
 				# if code_2 cipher code_1 works mark assignment as complete and delete from db
 			# else if response is wrong reject assignment and delete from db
 
+	email_sent = 0
 	# if email has been created, HIT task created, but no response yet from any user
 	if row[3] == 0:
 		# open inbox of convertist_email to see if someone sent message with code in subject line
 		SMTP_SERVER = "imap.gmail.com"
 		print "got into this block"
 		try:
-
+			print "in the try"
 			mail = imaplib.IMAP4_SSL(SMTP_SERVER)
 			mail.login(me,my_password)
 			mail.select('[Gmail]/All Mail')
@@ -86,13 +92,12 @@ for row in result:
 
 			id_list = mail_ids.split()
 			latest_email_id = int(id_list[-1])
+			print latest_email_id
 
 			if row[7] == 0:
 				first_email_id = int(id_list[0])	
 			else:
 				first_email_id = row[7]
-
-			email_sent = 0
 
 			# for each message read and unread
 			for i in range(latest_email_id,first_email_id, -1):
@@ -112,7 +117,6 @@ for row in result:
 								# get_results.py:88: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
 								if word == row[4]:
 									print "it worked!"
-									new_code = newCode(row[4])
 									email_from = msg['from']
 									first_char = email_from.find('<') + 1
 									last_char = email_from.find('>')
@@ -120,7 +124,7 @@ for row in result:
 									
 									# send response back to user with a corresponding code (use some kind of cipher)
 									msg = MIMEMultipart('alternative')
-									msg['Subject'] = "Generated subject line" + new_code
+									msg['Subject'] = "Generated subject line " + new_code
 									msg['From'] = me
 									msg['To'] = email_from
 
@@ -139,7 +143,7 @@ for row in result:
 									s.quit()
 
 									# set status on db to 1 and save code_2 in db
-									c.execute("UPDATE hits SET status=1, unique_code_2=?, last_email_checked=? WHERE unique_code_1=?", (new_code,i,word))
+									c.execute("UPDATE hits SET status=1, last_email_checked=? WHERE unique_code_1=?", (i,word))
 									#convertist_email, convertist_email_pw, hit_id, status, unique_code_1, unique_code_2, assignment_id, last_email_checked
 									email_sent = 1
 									break
@@ -156,9 +160,18 @@ for row in result:
 
 		except Exception, e:
 			print str(e)
-	print "this if statement"
-	print row[3]
-	raw_input()
+	
+
+	# if turk accepted yet no response
+	#current_time = int(time.time())
+	#if email_sent == 0 and (current_time - row[8] <= (config.AutoApprovalDelayInSeconds - config.cron_job_seconds)):
+		#TODO fine while MaxAssignments = 1, what TODO if multiple assignments per HIT?
+	#	print "deleting because"
+	#	worker_results = mturk.list_assignments_for_hit(HITId=row[2])
+	#	assignment_id = worker_results['Assignments']['AssignmentId']
+	#	mturk.reject_assignment(AssignmentId=assignment_id,RequesterFeedback="No code provided")
+	#	c.execute("DELETE from hits WHERE unique_code_1=?", (row[4],))
+
 	# if status is 1 (meaning we have sent back email to user)
 	if row[3] == 1:
 		print "status is 1"
@@ -172,10 +185,10 @@ for row in result:
 				xml_doc = xmltodict.parse(assignment['Answer'])
 				turk_response = xml_doc['QuestionFormAnswers']['Answer']['FreeText']
 				# check to see if response from user equals code sent
-				if turk_response == row[5]:
+				if turk_response == new_code:
 					# if code_2 cipher code_1 works mark assignment as complete and delete from db
 					mturk.approve_assignment(AssignmentId=assignment_id)
-					c.execute("DELETE from hits WHERE unique_code_2=?", (turk_response,))
+					c.execute("DELETE from hits WHERE unique_code_1=?", (row[4],))
 				else:
 					mturk.reject_assignment(AssignmentId=assignment_id,RequesterFeedback="Incorrect code provided")
 					c.execute("DELETE from hits WHERE unique_code_1=?", (row[4],))
